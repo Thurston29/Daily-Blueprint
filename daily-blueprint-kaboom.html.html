@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DAILY BLUEPRINT — KABOOM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Shrikhand&family=Archivo:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#1C0333;
+    --grape:#6C2BD9;
+    --magenta:#FF2E88;
+    --lime:#CCFF00;
+    --cyan:#00E5FF;
+    --tangerine:#FF6B00;
+    --paper:#FFF8EC;
+    --ink:#0D0D0D;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Archivo',sans-serif;
+    background:var(--void);
+    display:flex;
+    justify-content:center;
+    padding:0 0 60px;
+  }
+  .app{ width:100%; max-width:640px; }
+
+  /* ---------- HEADER ---------- */
+  .blast{
+    position:relative;
+    padding:40px 22px 30px;
+    text-align:center;
+    background:var(--void);
+    overflow:hidden;
+  }
+  .halftone{
+    position:absolute; inset:0;
+    background-image:radial-gradient(var(--paper) 1.4px, transparent 1.4px);
+    background-size:14px 14px;
+    opacity:.08;
+    pointer-events:none;
+  }
+  .starburst{ position:absolute; top:14px; right:22px; color:var(--lime); font-size:32px; transform:rotate(7deg); }
+  .starburst2{ position:absolute; bottom:10px; left:16px; color:var(--cyan); font-size:20px; transform:rotate(-8deg); }
+  .title{
+    font-family:'Bungee',cursive;
+    color:var(--paper);
+    font-size:clamp(30px,8vw,42px);
+    line-height:1.05;
+    margin:0;
+  }
+  .title .pop{ display:block; color:var(--magenta); font-size:clamp(36px,9vw,48px); transform:rotate(-3deg); margin-top:6px; }
+  .tagline{
+    font-family:'Shrikhand',cursive;
+    color:var(--cyan);
+    font-size:15px;
+    margin-top:16px;
+  }
+  .save-status{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:10px;
+    letter-spacing:.14em;
+    color:var(--lime);
+    margin-top:10px;
+    height:14px;
+    opacity:0;
+    transition:opacity .3s ease;
+  }
+  .save-status.show{ opacity:1; }
+
+  .confetti-rule{ height:14px; margin:0 20px; }
+  .confetti-rule svg{ width:100%; height:100%; display:block; }
+
+  /* ---------- ZONE SECTIONS ---------- */
+  .zone{ padding:26px 20px 30px; }
+  .zone-header{
+    display:inline-block;
+    font-family:'Bungee',cursive;
+    font-size:22px;
+    padding:8px 18px;
+    border:4px solid var(--ink);
+    border-radius:10px;
+    box-shadow:4px 4px 0 var(--ink);
+    margin-bottom:20px;
+  }
+  .zone[data-zone="morning"]{ background:var(--void); }
+  .zone[data-zone="morning"] .zone-header{ background:var(--lime); color:var(--ink); transform:rotate(-3deg); }
+  .zone[data-zone="work"]{ background:var(--paper); }
+  .zone[data-zone="work"] .zone-header{ background:var(--grape); color:var(--paper); transform:rotate(2deg); }
+  .zone[data-zone="evening"]{ background:var(--magenta); }
+  .zone[data-zone="evening"] .zone-header{ background:var(--cyan); color:var(--ink); transform:rotate(-2deg); }
+
+  .card-stack{ display:flex; flex-direction:column; gap:20px; }
+
+  /* ---------- BLOCK CARD ---------- */
+  .block-card{
+    background:var(--paper);
+    border:4px solid var(--ink);
+    border-radius:16px;
+    padding:16px 18px 18px;
+    box-shadow:5px 5px 0 var(--ink);
+    position:relative;
+  }
+  .block-card.tilt-a{ transform:rotate(-1.4deg); }
+  .block-card.tilt-b{ transform:rotate(1deg); }
+  .block-card.tilt-c{ transform:rotate(-1deg); }
+  .block-card.tilt-d{ transform:rotate(1.4deg); }
+  .block-card.is-now{ box-shadow:7px 7px 0 var(--ink); outline:3px solid var(--tangerine); outline-offset:2px; }
+
+  .now-badge{
+    position:absolute;
+    top:-14px; right:-10px;
+    background:var(--tangerine);
+    color:var(--ink);
+    font-family:'Bungee',cursive;
+    font-size:12px;
+    padding:6px 10px;
+    border:3px solid var(--ink);
+    border-radius:8px;
+    transform:rotate(7deg);
+    box-shadow:3px 3px 0 var(--ink);
+  }
+
+  .block-top{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+  .time-chip{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:.08em;
+    color:var(--ink);
+    background:var(--lime);
+    border:2px solid var(--ink);
+    border-radius:20px;
+    padding:4px 10px;
+  }
+  .block-title{
+    font-family:'Shrikhand',cursive;
+    font-size:19px;
+    color:var(--ink);
+  }
+
+  .why-row{
+    display:flex;
+    gap:8px;
+    margin:10px 0 12px;
+    padding:10px 12px;
+    background:rgba(108,43,217,0.07);
+    border-left:3px solid var(--grape);
+    border-radius:6px;
+  }
+  .why-label{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:9px;
+    letter-spacing:.12em;
+    color:var(--grape);
+    flex-shrink:0;
+    padding-top:2px;
+    white-space:nowrap;
+  }
+  .why-text{
+    font-family:'Archivo',sans-serif;
+    font-size:13px;
+    color:var(--ink);
+    opacity:.85;
+    line-height:1.5;
+  }
+
+  .notes-area{
+    width:100%;
+    font-family:'Archivo',sans-serif;
+    font-size:13.5px;
+    color:var(--ink);
+    border:2px solid var(--ink);
+    border-radius:8px;
+    padding:9px 11px;
+    resize:vertical;
+    min-height:44px;
+    background:#fff;
+    margin-bottom:12px;
+  }
+  .notes-area:focus{ outline:none; box-shadow:0 0 0 3px var(--cyan); }
+  .notes-area::placeholder{ color:#0D0D0D; opacity:.35; }
+
+  .task-input-row{ display:flex; gap:8px; margin-bottom:10px; }
+  .task-input-row input{
+    flex:1;
+    font-family:'Archivo',sans-serif;
+    font-size:13px;
+    padding:8px 11px;
+    border:2px solid var(--ink);
+    border-radius:8px;
+    background:#fff;
+  }
+  .task-input-row input:focus{ outline:none; box-shadow:0 0 0 3px var(--cyan); }
+  .add-btn{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:.08em;
+    color:var(--ink);
+    background:var(--tangerine);
+    border:2px solid var(--ink);
+    border-radius:8px;
+    padding:8px 12px;
+    cursor:pointer;
+  }
+  .add-btn:hover{ filter:brightness(1.08); }
+
+  .task-list{ display:flex; flex-direction:column; gap:7px; }
+  .task-row{ display:flex; align-items:center; gap:8px; }
+  .task-check{
+    flex-shrink:0;
+    width:20px; height:20px;
+    border:2px solid var(--ink);
+    border-radius:50%;
+    background:#fff;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bungee',cursive;
+    font-size:10px;
+    color:transparent;
+  }
+  .task-row.done .task-check{ background:var(--lime); color:var(--ink); }
+  .task-text{ flex:1; font-size:13px; color:var(--ink); }
+  .task-row.done .task-text{ text-decoration:line-through; opacity:.5; }
+  .task-del{ background:none; border:none; font-family:'Bungee',cursive; font-size:13px; color:var(--ink); opacity:.35; cursor:pointer; }
+  .task-del:hover{ opacity:1; color:var(--magenta); }
+
+  .empty-tasks{ font-size:12px; color:var(--ink); opacity:.4; padding:2px 0; }
+
+  /* ---------- FOOTER ---------- */
+  .footer-panel{
+    background:var(--paper);
+    padding:20px 20px 26px;
+    text-align:center;
+  }
+  .reset-btn{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:11px;
+    letter-spacing:.1em;
+    color:var(--ink);
+    background:#fff;
+    border:2px solid var(--ink);
+    border-radius:8px;
+    padding:9px 16px;
+    cursor:pointer;
+    opacity:.6;
+  }
+  .reset-btn:hover{ opacity:1; }
+  .signoff{
+    font-family:'Shrikhand',cursive;
+    font-size:13px;
+    color:var(--ink);
+    opacity:.5;
+    margin-top:16px;
+    transform:rotate(-2deg);
+  }
+
+  .loading-note{
+    text-align:center;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:12px;
+    letter-spacing:.1em;
+    color:var(--paper);
+    padding:16px;
+    opacity:.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <div class="blast">
+    <div class="halftone"></div>
+    <div class="starburst">✺</div>
+    <div class="starburst2">✷</div>
+    <h1 class="title">DAILY<span class="pop">BLUEPRINT</span></h1>
+    <div class="tagline">build the day before it builds you!</div>
+    <div class="save-status" id="saveStatus">SAVED ✓</div>
+  </div>
+
+  <div class="confetti-rule">
+    <svg viewBox="0 0 400 14" preserveAspectRatio="none"><path d="M0 7 Q 20 -3 40 7 T 80 7 T 120 7 T 160 7 T 200 7 T 240 7 T 280 7 T 320 7 T 360 7 T 400 7" stroke="#CCFF00" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+  </div>
+
+  <div id="zonesRoot">
+    <div class="loading-note">LOADING YOUR DAY…</div>
+  </div>
+
+  <div class="footer-panel">
+    <button class="reset-btn" id="resetBtn">CLEAR ALL MY NOTES &amp; TASKS</button>
+    <div class="signoff">KABOOM · @dailyblueprint</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const STORAGE_KEY = 'daily-blueprint-data';
+  const TILTS = ['tilt-a','tilt-b','tilt-c','tilt-d'];
+
+  // Generic starter blueprint — fully editable content (notes/tasks) per block.
+  // Times are 24hr [startMin, endMin] for "current block" detection.
+  const BLOCKS = [
+    { id:'rise',    zone:'morning', time:'5:00 – 5:00 AM',  start:300,  end:305,  title:'Rise & Prime',
+      why:'Waking before the rest of your world does hands you uncontested minutes nobody else can claim.' },
+    { id:'move',    zone:'morning', time:'5:00 – 5:20 AM',  start:300,  end:320,  title:'Move',
+      why:'A short, intense burst of movement first thing raises your energy and mood for hours afterward.' },
+    { id:'reflect', zone:'morning', time:'5:20 – 5:45 AM',  start:320,  end:345,  title:'Reflect',
+      why:'A few quiet minutes of stillness — meditation, prayer, or journaling — lowers stress and sharpens focus before the noise starts.' },
+    { id:'grow',    zone:'morning', time:'5:45 – 6:15 AM',  start:345,  end:375,  title:'Grow',
+      why:'Feeding your mind before anyone else can interrupt it compounds — a little, consistently, beats a lot occasionally.' },
+    { id:'connect', zone:'morning', time:'6:15 – 8:00 AM',  start:375,  end:480,  title:'Connect, No Screens',
+      why:'Undivided attention here — no phone, no news — is what the people around you actually remember.' },
+    { id:'deepwork',zone:'work',    time:'8:00 AM – 1:00 PM',start:480, end:780,  title:'Deep Work',
+      why:'Your best hours belong to your most important work — protect this block from meetings and notifications.' },
+    { id:'admin',   zone:'work',    time:'1:00 – 5:00 PM',  start:780,  end:1020, title:'Admin & Meetings',
+      why:'Lower-stakes, lower-creativity tasks fit naturally into your lower-energy hours — save deep focus for the morning.' },
+    { id:'transition', zone:'work', time:'5:00 – 6:00 PM',  start:1020, end:1080, title:'Decompress',
+      why:'A deliberate buffer between "work you" and "home you" stops one from bleeding into the other.' },
+    { id:'evening', zone:'evening', time:'6:00 – 7:30 PM',  start:1080, end:1170, title:'Evening Connection',
+      why:'Device-free time with the people you live with is the highest-leverage relationship investment in your whole day.' },
+    { id:'winddown',zone:'evening', time:'7:30 – 9:30 PM',  start:1170, end:1290, title:'Wind Down',
+      why:'A calm, low-light, low-stimulation runway signals your body it\'s genuinely safe to power down.' },
+    { id:'sleep',   zone:'evening', time:'9:30 PM',         start:1290, end:1291, title:'Sleep',
+      why:'Recovery — physical and mental — happens here, not during the day. Protect it like you protect deep work.' },
+  ];
+
+  const ZONE_LABELS = { morning:'MORNING LAUNCH', work:'THE GRIND', evening:'WIND DOWN & CONNECT' };
+  const ZONE_ORDER = ['morning','work','evening'];
+
+  let data = {}; // { [blockId]: { notes:'', tasks:[{id,text,done}] } }
+  const saveTimers = {};
+
+  function ensureBlockData(id){
+    if(!data[id]) data[id] = { notes:'', tasks:[] };
+    return data[id];
+  }
+
+  function currentBlockId(){
+    const now = new Date();
+    const mins = now.getHours()*60 + now.getMinutes();
+    for(const b of BLOCKS){
+      if(mins >= b.start && mins < b.end) return b.id;
+    }
+    return null;
+  }
+
+  // ---------- STORAGE ----------
+  async function loadData(){
+    try{
+      const res = await window.storage.get(STORAGE_KEY);
+      if(res && res.value){
+        data = JSON.parse(res.value);
+      }
+    }catch(e){
+      data = {};
+    }
+    BLOCKS.forEach(b => ensureBlockData(b.id));
+  }
+
+  async function persist(){
+    try{
+      await window.storage.set(STORAGE_KEY, JSON.stringify(data));
+      flashSaved();
+    }catch(e){
+      console.error('Storage error', e);
+    }
+  }
+
+  function flashSaved(){
+    const el = document.getElementById('saveStatus');
+    el.classList.add('show');
+    clearTimeout(flashSaved._t);
+    flashSaved._t = setTimeout(()=> el.classList.remove('show'), 1200);
+  }
+
+  function scheduleSave(){
+    clearTimeout(scheduleSave._t);
+    scheduleSave._t = setTimeout(persist, 500);
+  }
+
+  // ---------- RENDER ----------
+  function render(){
+    const root = document.getElementById('zonesRoot');
+    root.innerHTML = '';
+    const nowId = currentBlockId();
+
+    ZONE_ORDER.forEach(zoneKey => {
+      const zoneEl = document.createElement('div');
+      zoneEl.className = 'zone';
+      zoneEl.dataset.zone = zoneKey;
+
+      const header = document.createElement('div');
+      header.className = 'zone-header';
+      header.textContent = ZONE_LABELS[zoneKey];
+      zoneEl.appendChild(header);
+
+      const stack = document.createElement('div');
+      stack.className = 'card-stack';
+
+      BLOCKS.filter(b => b.zone === zoneKey).forEach((b, i) => {
+        stack.appendChild(renderCard(b, i, b.id === nowId));
+      });
+
+      zoneEl.appendChild(stack);
+      root.appendChild(zoneEl);
+    });
+  }
+
+  function renderCard(block, idx, isNow){
+    const bd = ensureBlockData(block.id);
+    const card = document.createElement('div');
+    card.className = 'block-card ' + TILTS[idx % TILTS.length] + (isNow ? ' is-now' : '');
+
+    if(isNow){
+      const badge = document.createElement('div');
+      badge.className = 'now-badge';
+      badge.textContent = '★ NOW';
+      card.appendChild(badge);
+    }
+
+    const top = document.createElement('div');
+    top.className = 'block-top';
+    const chip = document.createElement('span');
+    chip.className = 'time-chip';
+    chip.textContent = block.time;
+    const title = document.createElement('span');
+    title.className = 'block-title';
+    title.textContent = block.title;
+    top.appendChild(chip);
+    top.appendChild(title);
+    card.appendChild(top);
+
+    const whyRow = document.createElement('div');
+    whyRow.className = 'why-row';
+    const whyLabel = document.createElement('div');
+    whyLabel.className = 'why-label';
+    whyLabel.textContent = 'WHY IT MATTERS';
+    const whyText = document.createElement('div');
+    whyText.className = 'why-text';
+    whyText.textContent = block.why;
+    whyRow.appendChild(whyLabel);
+    whyRow.appendChild(whyText);
+    card.appendChild(whyRow);
+
+    const notes = document.createElement('textarea');
+    notes.className = 'notes-area';
+    notes.placeholder = 'add your own notes for this block…';
+    notes.value = bd.notes;
+    notes.addEventListener('input', () => { bd.notes = notes.value; scheduleSave(); });
+    notes.addEventListener('blur', persist);
+    card.appendChild(notes);
+
+    const inputRow = document.createElement('div');
+    inputRow.className = 'task-input-row';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'add a task…';
+    input.maxLength = 80;
+    const addBtn = document.createElement('button');
+    addBtn.className = 'add-btn';
+    addBtn.textContent = 'ADD';
+    function addTask(){
+      const val = input.value.trim();
+      if(!val) return;
+      bd.tasks.push({ id: Date.now()+Math.random(), text: val, done:false });
+      input.value = '';
+      persist();
+      render();
+    }
+    addBtn.addEventListener('click', addTask);
+    input.addEventListener('keydown', e => { if(e.key === 'Enter') addTask(); });
+    inputRow.appendChild(input);
+    inputRow.appendChild(addBtn);
+    card.appendChild(inputRow);
+
+    const taskList = document.createElement('div');
+    taskList.className = 'task-list';
+    if(bd.tasks.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'empty-tasks';
+      empty.textContent = 'no tasks yet';
+      taskList.appendChild(empty);
+    } else {
+      bd.tasks.forEach(t => {
+        const row = document.createElement('div');
+        row.className = 'task-row' + (t.done ? ' done' : '');
+        const check = document.createElement('div');
+        check.className = 'task-check';
+        check.textContent = '✓';
+        check.addEventListener('click', () => { t.done = !t.done; persist(); render(); });
+        const text = document.createElement('div');
+        text.className = 'task-text';
+        text.textContent = t.text;
+        const del = document.createElement('button');
+        del.className = 'task-del';
+        del.textContent = '✕';
+        del.addEventListener('click', () => {
+          bd.tasks = bd.tasks.filter(x => x.id !== t.id);
+          persist();
+          render();
+        });
+        row.appendChild(check);
+        row.appendChild(text);
+        row.appendChild(del);
+        taskList.appendChild(row);
+      });
+    }
+    card.appendChild(taskList);
+
+    return card;
+  }
+
+  // ---------- RESET ----------
+  document.getElementById('resetBtn').addEventListener('click', async () => {
+    if(!confirm('Clear every note and task on every block? This can\'t be undone.')) return;
+    data = {};
+    BLOCKS.forEach(b => ensureBlockData(b.id));
+    await persist();
+    render();
+  });
+
+  // ---------- INIT ----------
+  (async function init(){
+    await loadData();
+    render();
+    // Refresh "NOW" highlight every minute
+    setInterval(render, 60000);
+  })();
+})();
+</script>
+
+</body>
+</html>
