@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>DAILY BLUEPRINT — KABOOM</title>
+<title>DAILY PLANNER — KABOOM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Shrikhand&family=Archivo:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -280,7 +280,7 @@
     <div class="halftone"></div>
     <div class="starburst">✺</div>
     <div class="starburst2">✷</div>
-    <h1 class="title">DAILY<span class="pop">BLUEPRINT</span></h1>
+    <h1 class="title">DAILY<span class="pop">PLANNER</span></h1>
     <div class="tagline">build the day before it builds you!</div>
     <div class="save-status" id="saveStatus">SAVED ✓</div>
   </div>
@@ -295,7 +295,7 @@
 
   <div class="footer-panel">
     <button class="reset-btn" id="resetBtn">CLEAR ALL MY NOTES &amp; TASKS</button>
-    <div class="signoff">KABOOM · @dailyblueprint</div>
+    <div class="signoff">KABOOM · @dailyplanner</div>
   </div>
 </div>
 
@@ -352,9 +352,38 @@
   }
 
   // ---------- STORAGE ----------
+  // Uses Claude's window.storage when this page is running inside a Claude
+  // preview; falls back to the browser's own localStorage once the file is
+  // deployed as a real, standalone site (e.g. on GitHub Pages).
+  const hasClaudeStorage = (typeof window.storage !== 'undefined');
+
+  async function storageGet(key){
+    if(hasClaudeStorage){
+      try{
+        return await window.storage.get(key);
+      }catch(e){
+        // Claude's storage bridge misbehaved — fall back below
+      }
+    }
+    const raw = localStorage.getItem(key);
+    return raw ? { key, value: raw } : null;
+  }
+
+  async function storageSet(key, value){
+    if(hasClaudeStorage){
+      try{
+        return await window.storage.set(key, value);
+      }catch(e){
+        // Claude's storage bridge misbehaved — fall back below
+      }
+    }
+    localStorage.setItem(key, value);
+    return { key, value };
+  }
+
   async function loadData(){
     try{
-      const res = await window.storage.get(STORAGE_KEY);
+      const res = await storageGet(STORAGE_KEY);
       if(res && res.value){
         data = JSON.parse(res.value);
       }
@@ -366,7 +395,7 @@
 
   async function persist(){
     try{
-      await window.storage.set(STORAGE_KEY, JSON.stringify(data));
+      await storageSet(STORAGE_KEY, JSON.stringify(data));
       flashSaved();
     }catch(e){
       console.error('Storage error', e);
