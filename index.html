@@ -307,31 +307,31 @@
   // Generic starter blueprint — fully editable content (notes/tasks) per block.
   // Times are 24hr [startMin, endMin] for "current block" detection.
   const BLOCKS = [
-    { id:'rise',    zone:'morning', time:'5:00 – 5:00 AM',  start:300,  end:305,  title:'Rise & Prime',
-      why:'Waking before the rest of your world does hands you uncontested minutes nobody else can claim.' },
+    { id:'rise',    zone:'morning', time:'4:45 – 5:00 AM',  start:285,  end:300,  title:'Rise & Prepare',
+      why:'A short, unhurried runway before anything else starts — hydrate, and have what you need already laid out so the next block starts with zero friction.' },
     { id:'move',    zone:'morning', time:'5:00 – 5:20 AM',  start:300,  end:320,  title:'Move',
       why:'A short, intense burst of movement first thing raises your energy and mood for hours afterward.' },
-    { id:'reflect', zone:'morning', time:'5:20 – 5:45 AM',  start:320,  end:345,  title:'Reflect',
+    { id:'reflect', zone:'morning', time:'5:20 – 5:40 AM',  start:320,  end:340,  title:'Reflect',
       why:'A few quiet minutes of stillness — meditation, prayer, or journaling — lowers stress and sharpens focus before the noise starts.' },
-    { id:'grow',    zone:'morning', time:'5:45 – 6:15 AM',  start:345,  end:375,  title:'Grow',
+    { id:'grow',    zone:'morning', time:'5:40 – 6:00 AM',  start:340,  end:360,  title:'Grow',
       why:'Feeding your mind before anyone else can interrupt it compounds — a little, consistently, beats a lot occasionally.' },
-    { id:'connect', zone:'morning', time:'6:15 – 8:00 AM',  start:375,  end:480,  title:'Connect, No Screens',
-      why:'Undivided attention here — no phone, no news — is what the people around you actually remember.' },
-    { id:'deepwork',zone:'work',    time:'8:00 AM – 1:00 PM',start:480, end:780,  title:'Deep Work',
+    { id:'selfcare',zone:'morning', time:'6:00 – 7:00 AM',  start:360,  end:420,  title:'Self-Care',
+      why:'Shower, get ready, ease into the day at your own pace — no rush, no screens, just getting yourself right before the work starts.' },
+    { id:'deepwork1',zone:'work',   time:'7:00 AM – 12:00 PM',start:420,end:720,  title:'Deep Work',
       why:'Your best hours belong to your most important work — protect this block from meetings and notifications.' },
-    { id:'admin',   zone:'work',    time:'1:00 – 5:00 PM',  start:780,  end:1020, title:'Admin & Meetings',
-      why:'Lower-stakes, lower-creativity tasks fit naturally into your lower-energy hours — save deep focus for the morning.' },
-    { id:'transition', zone:'work', time:'5:00 – 6:00 PM',  start:1020, end:1080, title:'Decompress',
+    { id:'decompress1',zone:'work', time:'12:00 – 1:00 PM',  start:720,  end:780,  title:'Decompress',
+      why:'A free hour to do what you want — a walk, a nap, lunch, whatever resets you. Stepping away is what makes the next block sharp.' },
+    { id:'deepwork2',zone:'work',   time:'1:00 – 5:00 PM',   start:780,  end:1020, title:'Deep Work',
+      why:'A second focused push while there\'s still good energy in the tank — pick up where the morning left off.' },
+    { id:'decompress2',zone:'work', time:'5:00 – 6:00 PM',   start:1020, end:1080, title:'Decompress',
       why:'A deliberate buffer between "work you" and "home you" stops one from bleeding into the other.' },
-    { id:'evening', zone:'evening', time:'6:00 – 7:30 PM',  start:1080, end:1170, title:'Evening Connection',
-      why:'Device-free time with the people you live with is the highest-leverage relationship investment in your whole day.' },
-    { id:'winddown',zone:'evening', time:'7:30 – 9:30 PM',  start:1170, end:1290, title:'Wind Down',
+    { id:'activities',zone:'evening',time:'6:00 – 9:00 PM',  start:1080, end:1260, title:'Activities',
+      why:'Church, pickleball, seeing people, or a quiet night in — whatever\'s on today. Add your notes here to give the evening direction.' },
+    { id:'winddown',zone:'evening', time:'9:00 – 10:00 PM',  start:1260, end:1320, title:'Wind Down',
       why:'A calm, low-light, low-stimulation runway signals your body it\'s genuinely safe to power down.' },
-    { id:'sleep',   zone:'evening', time:'9:30 PM',         start:1290, end:1291, title:'Sleep',
-      why:'Recovery — physical and mental — happens here, not during the day. Protect it like you protect deep work.' },
   ];
 
-  const ZONE_LABELS = { morning:'MORNING LAUNCH', work:'THE GRIND', evening:'WIND DOWN & CONNECT' };
+  const ZONE_LABELS = { morning:'MORNING LAUNCH', work:'THE GRIND', evening:'EVENING' };
   const ZONE_ORDER = ['morning','work','evening'];
 
   let data = {}; // { [blockId]: { notes:'', tasks:[{id,text,done}] } }
